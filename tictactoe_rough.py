@@ -1,65 +1,68 @@
-def tic_tac_toe():
+def Main():
+    import random
     board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     end = False
-    win_commbinations = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))
+    combos = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))
 
     def draw():
-        print(board[0] ,"|", board[1] ,"|", board[2])
+        print(board[0] ,'|', board[1] ,'|', board[2])
         print("----------")
-        print(board[3] ,"|", board[4] ,"|", board[5])
+        print(board[3] ,'|', board[4] ,'|', board[5])
         print("----------")
-        print(board[6] ,"|", board[7] ,"|", board[8])
+        print(board[6] ,'|', board[7] ,'|', board[8])
         print()
 
-    def p1():
-        n = choose_number()
-        if board[n] == "X" or board[n] == "O":
-            print("\nYou can't go there. Try again")
-            p1()
-        else:
-            board[n] = "X"
+    def player():
+        try:
+            n = input()
+            check_num(n, True)
+        except ValueError:
+            print("Please enter numerical values only")
 
-    def p2():
-        n = choose_number()
-        if board[n] == "X" or board[n] == "O":
-            print("\nYou can't go there. Try again")
-            p2()
-        else:
-            board[n] = "O"
+    def machine():
+        n = random.randint(1,9)
+        check_num(n, False)
 
-    def choose_number():
-        while True:
-            while True:
-                a = input()
-                try:
-                    a  = int(a)
-                    a -= 1
-                    if a in range(0, 9):
-                        return a
+
+    def check_num(num, type):
+        try:
+            num -= 1
+            if num in range(0,9):
+                if board[num] == "X" or board[num] == "O":
+                    if type == False:
+                        machine()
                     else:
-                        print("\nThat's not on the board. Try again")
-                        continue
-                except ValueError:
-                   print("\nThat's not a number. Try again")
-                   continue
+                        print("That location is already taken, try again!")
+                        player()
+                else:
+                    if type == False:
+                        board[num] = "O"
+                    else:
+                        board[num] = "X"
+            else:
+                if type == False:
+                    machine()
+                else:
+                    print("That number is not on the board, try again")
+                    player()
+        except ValueError:
+            print("Please enter numerical values only")
 
     def check_board():
         count = 0
-        for a in win_commbinations:
+        for a in combos:
             if board[a[0]] == board[a[1]] == board[a[2]] == "X":
-                print("Player 1 Wins!\n")
-                print("Congratulations!\n")
+                print("You Win!\n")
                 return True
 
             if board[a[0]] == board[a[1]] == board[a[2]] == "O":
-                print("Player 2 Wins!\n")
-                print("Congratulations!\n")
+                print("You Loose!\n")
                 return True
         for a in range(9):
             if board[a] == "X" or board[a] == "O":
                 count += 1
             if count == 9:
-                print("The game ends in a Tie\n")
+                print("Tie!")
                 return True
 
     while not end:
@@ -67,19 +70,14 @@ def tic_tac_toe():
         end = check_board()
         if end == True:
             break
-        print("Player 1 choose where to place a cross")
-        p1()
+        print("Choose where to place your cross")
+        player()
         print()
         draw()
         end = check_board()
         if end == True:
             break
-        print("Player 2 choose where to place a nought")
-        p2()
+        print("Computers turn...")
+        machine()
         print()
-
-    if input("Play again (y/n)\n") == "y":
-        print()
-        tic_tac_toe()
-
-tic_tac_toe()
+Main()
